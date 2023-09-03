@@ -11,27 +11,38 @@ body{
     float: right;
 }
 
-#result{
-    font-size: 20px;
+.button{
+    background-color: black;
+    border: 3px solid darkgray;
+    color: darkgray;
+    padding: 10px 24px;
+    font-weight: bold;
+}
+
+.button:hover{
+    background-color: darkgray;
+    color: black;
+    font-weight: bolder;
 }
 
 #top{
-    height: 100px;
+    min-height: 100px;
     padding-left: 10px;
     padding-right: 10px;
+    font-family: "Courier New", monospace;
 }
 
 #main{
-    height: 780px;
-    padding-left: 300px;
-    padding-right: 300px;
+    min-height: 525px;
+    padding-left: 20px;
+    padding-right: 20px;
     font-size: 20px;
     text-align: center;
     line-height: 30px;
+    font-family: "Courier New", monospace;
 }
 
 #footer{
-    height: 30px;
-    text-align: center;
-    line-height: 30px;
+    padding-top: 20px;
+    bottom: auto;
 }

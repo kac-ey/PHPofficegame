@@ -21,11 +21,11 @@ public function __construct($story, $success, $fail, array $items, $currTable, $
     $this->currRoom = $currRoom;
 }
 
-
+    # print direction column from table
     public function getDirections($conn)
     {
-        $check = "SELECT direction FROM " . $this->currTable;
-        $stmt = $conn->prepare($check);
+        $stmt = "SELECT direction FROM " . $this->currTable;
+        $stmt = $conn->prepare($stmt);
         $stmt->execute();
         $result = $stmt->get_result();
         if ($result)
@@ -40,11 +40,11 @@ public function __construct($story, $success, $fail, array $items, $currTable, $
         }
     }
 
-
+    # assign new room and new table based on user input
     public function getNextRoom($conn, $direction)
     {
-        $check = "SELECT destination, newtable FROM " . $this->currTable . " WHERE direction=?;";
-        $stmt = $conn->prepare($check);
+        $stmt = "SELECT destination, newtable FROM " . $this->currTable . " WHERE direction=?;";
+        $stmt = $conn->prepare($stmt);
         $stmt->bind_param("s", $direction);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -61,48 +61,79 @@ public function __construct($story, $success, $fail, array $items, $currTable, $
         }
     }
 
-
+    # check and add item to inventory
     public function getItem()
     {
-        if(count($this->inventory) == count($this->items)-1)
+        # if all items found, go to success screen
+        if(count($this->inventory) == count($this->items)-2)
         {
             return 1;
         }
+        # else if in room with an item
         elseif($this->currRoom != 'the parking lot') {
+            # get item in room
             $result = array_search($this->currRoom, $this->items);
-
+            # if item is Toby, go to fail screen
             if($result == 'Toby'){
                 return -1;
             }
-            elseif(!in_array($result, $this->inventory))
+            # else if item in inventory, print repeat visit
+            elseif(in_array($result, $this->inventory))
             {
-                array_push($this->inventory, $result);
+                return 2;
             }
         }
     }
 
-
-    public function printStatement($conn)
+    # add item to inventory
+    public function addItem()
     {
-        if($this->getItem() == 'Toby'){
-            echo $this->fail;
-        }
-        else{
-            echo $this->story, "<br><br>";
-            echo "<br> You are in $this->currRoom.";
-            echo "<br> Which direction would you like to go?";
-            $this->getDirections($conn);
-            echo "<br><br>Your inventory: <br>";
-            echo implode(", ",$this->inventory);
-        }
+        $result = array_search($this->currRoom, $this->items);
+        array_push($this->inventory, $result);
     }
 
+
+    # print info with inventory
+    public function printStatement($conn)
+    {
+        echo $this->story, "<br><br><br>";
+
+        $this->addItem();
+        echo "You found your ", array_search($this->currRoom, $this->items), " in ", $this->currRoom, "!";
+        echo "<br><br>Your inventory: <br>";
+        echo implode(", ",$this->inventory);
+        echo "<br><br>Which direction would you like to go?";
+        $this->getDirections($conn);
+    }
+
+    public function printRepeat($conn)
+    {
+        echo $this->story, "<br><br><br>";
+        echo "You've already been to ", $this->currRoom, ". There are no items left.";
+        echo "<br><br>Your inventory: <br>";
+        echo implode(", ",$this->inventory);
+        echo "<br><br>Which direction would you like to go?";
+        $this->getDirections($conn);
+    }
+
+    # print info with no inventory
     public function start($conn)
     {
-        session_unset();
         echo $this->story, "<br><br>";
-        echo "<br> You are in $this->currRoom.";
-        echo "<br> Which direction would you like to go?";
+        echo "<br>You are in $this->currRoom.";
+        echo "<br>Which direction would you like to go?";
+        $this->getDirections($conn);
+    }
+
+    # print info with error message
+    public function noMove($conn)
+    {
+        echo $this->story, "<br><br>";
+        echo "You entered an invalid direction. Try again";
+        echo "<br><br>You are in $this->currRoom.";
+        echo "<br><br>Your inventory: <br>";
+        echo implode(", ",$this->inventory);
+        echo "<br><br>Which direction would you like to go?";
         $this->getDirections($conn);
     }
 }

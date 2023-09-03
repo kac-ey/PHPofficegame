@@ -48,9 +48,14 @@ include "design/templates/top.php";
     <?php
     if(!empty($_POST["inputDirection"]))
     {
-        $direction = $_POST["inputDirection"];
+        $direction = trim(strtolower($_POST["inputDirection"]));
         $_SESSION['dwight']->getNextRoom($conn, $direction);
-        if($_SESSION['dwight']->getItem() == -1)
+
+        if ($direction != 'north' && $direction != 'south' && $direction != 'east' && $direction != 'west')
+        {
+            $_SESSION['dwight']->noMove($conn);
+        }
+        elseif($_SESSION['dwight']->getItem() == -1)
         {
             header('Location: http://' . $_SERVER['HTTP_HOST'] . '/officeGame/dwightfail.php');
             die();
@@ -59,6 +64,10 @@ include "design/templates/top.php";
         {
             header('Location: http://' . $_SERVER['HTTP_HOST'] . '/officeGame/dwightsuccess.php');
             die();
+        }
+        elseif($_SESSION['dwight']->getItem() == 2 || $_SESSION['dwight']->currTable == 'parkinglot')
+        {
+            $_SESSION['dwight']->printRepeat($conn);
         }
         else
         {

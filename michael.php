@@ -54,7 +54,12 @@ include "design/templates/top.php";
     {
         $direction = $_POST["inputDirection"];
         $_SESSION['michael']->getNextRoom($conn, $direction);
-        if($_SESSION['michael']->getItem() == -1)
+
+        if ($direction != 'north' && $direction != 'south' && $direction != 'east' && $direction != 'west')
+        {
+            $_SESSION['michael']->noMove($conn);
+        }
+        elseif($_SESSION['michael']->getItem() == -1)
         {
             header('Location: http://' . $_SERVER['HTTP_HOST'] . '/officeGame/michaelfail.php');
             die();
@@ -63,6 +68,10 @@ include "design/templates/top.php";
         {
             header('Location: http://' . $_SERVER['HTTP_HOST'] . '/officeGame/michaelsuccess.php');
             die();
+        }
+        elseif($_SESSION['michael']->getItem() == 2 || $_SESSION['michael']->currTable == 'parkinglot')
+        {
+            $_SESSION['michael']->printRepeat($conn);
         }
         else
         {
@@ -77,7 +86,6 @@ include "design/templates/top.php";
     ?>
     <form action="michael.php" method="POST">
         <input type="text" name="inputDirection" placeholder="Where to?" required>
-        <input type="button" value="Let's Go!">
     </form>
 </div>
 <?php

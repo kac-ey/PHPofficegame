@@ -14,9 +14,9 @@ include "design/templates/top.php";
     <?php
     session_unset();
     ?>
-    <h3>Welcome to the Office Text-Based Game! <br><br> Which character would you like to play as?</h3>
-    <a href="michael.php"><button>Michael</button></a>
-    <a href="dwight.php"><button>Dwight</button></a>
+    <h3>Welcome to the Office Text-Based Game! <br><br> Which character would you like to play as?<br><br></h3>
+    <a class="button" href="michael.php">Michael</a>
+    <a class="button" href="dwight.php">Dwight</a>
 </div>
 <?php
 include "design/templates/footer.php";
