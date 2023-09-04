@@ -11,9 +11,10 @@ $success = "You found everything without running into god-awful Toby. And he'll 
 $fail = "Toby caught you! Doesn't he know that it's better to be hurt by someone you know accidentally than by a 
 stranger on purpose? Now you'll have to figure out a way to get them all back.";
 
-$items = array("Throwing Stars"=>"the lobby", "Pepper Spray"=>"the warehouse", "Cross Bow"=>"reception",
-    "Blowgun"=>"accounting", "Nunchucks"=>"Michael's office", "Stun Gun"=>"sales", "Toby"=>"the conference room",
-    "Brass Knuckles"=>"the kitchen", "Chinese Sword"=>"the annex", "Nightstick"=>"the break room");
+$items = array("throwing stars"=>"the lobby", "pepper spray"=>"the warehouse", "cross bow"=>"reception",
+    "blowgun"=>"accounting", "nunchucks"=>"Michael's office", "stun gun"=>"sales", "Toby"=>"the conference room",
+    "brass knuckles"=>"the kitchen", "Chinese sword"=>"the annex", "nightstick"=>"the break room",
+    "sai daggers"=>"the stairs", "taser"=>"Vance Refrigeration");
 
 $currRoom = 'the parking lot';
 
@@ -49,9 +50,8 @@ include "design/templates/top.php";
     if(!empty($_POST["inputDirection"]))
     {
         $direction = trim(strtolower($_POST["inputDirection"]));
-        $_SESSION['dwight']->getNextRoom($conn, $direction);
 
-        if ($direction != 'north' && $direction != 'south' && $direction != 'east' && $direction != 'west')
+        if (!$_SESSION['dwight']->getNextRoom($conn, $direction))
         {
             $_SESSION['dwight']->noMove($conn);
         }
@@ -62,6 +62,7 @@ include "design/templates/top.php";
         }
         elseif($_SESSION['dwight']->getItem() == 1)
         {
+            $_SESSION['dwight']->addItem();
             header('Location: http://' . $_SERVER['HTTP_HOST'] . '/officeGame/dwightsuccess.php');
             die();
         }

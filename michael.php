@@ -17,7 +17,8 @@ alone. You'll just have to hope none of the kids find any. Why is Toby the way t
 $items = array("World's Best Boss Mug"=>"the lobby", "Newton's Cradle"=>"the warehouse",
     "Chattering Teeth"=>"reception", "Toby"=>"accounting", "Train Whistle"=>"Michael's office",
     "Dundie"=>"sales", "Rolodex"=>"the conference room", "Slinky"=>"the kitchen",
-    "Dunder Mifflin Truck"=>"the annex", "Hoberman Sphere"=>"the break room");
+    "Dunder Mifflin Truck"=>"the annex", "Hoberman Sphere"=>"the break room", "Mini Pool Table"=>"the stairs",
+    "Grenade Paperweight"=>"Vance Refrigeration");
 
 $currRoom = 'the parking lot';
 
@@ -53,9 +54,8 @@ include "design/templates/top.php";
     if(!empty($_POST["inputDirection"]))
     {
         $direction = $_POST["inputDirection"];
-        $_SESSION['michael']->getNextRoom($conn, $direction);
 
-        if ($direction != 'north' && $direction != 'south' && $direction != 'east' && $direction != 'west')
+        if (!$_SESSION['michael']->getNextRoom($conn, $direction))
         {
             $_SESSION['michael']->noMove($conn);
         }
@@ -66,6 +66,7 @@ include "design/templates/top.php";
         }
         elseif($_SESSION['michael']->getItem() == 1)
         {
+            $_SESSION['michael']->addItem();
             header('Location: http://' . $_SERVER['HTTP_HOST'] . '/officeGame/michaelsuccess.php');
             die();
         }

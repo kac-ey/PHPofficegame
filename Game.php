@@ -7,9 +7,7 @@ public $success;
 public $fail;
 public $items;
 public $currTable;
-
 public $currRoom;
-
 public $inventory = array();
 public function __construct($story, $success, $fail, array $items, $currTable, $currRoom)
 {
@@ -56,8 +54,13 @@ public function __construct($story, $success, $fail, array $items, $currTable, $
                 {
                     $this->currRoom = $row["destination"];
                     $this->currTable = $row["newtable"];
+                    return true;
                 }
             }
+        }
+        else
+        {
+            return $result;
         }
     }
 
@@ -97,10 +100,9 @@ public function __construct($story, $success, $fail, array $items, $currTable, $
     public function printStatement($conn)
     {
         echo $this->story, "<br><br><br>";
-
         $this->addItem();
         echo "You found your ", array_search($this->currRoom, $this->items), " in ", $this->currRoom, "!";
-        echo "<br><br>Your inventory: <br>";
+        echo "<br><br>Your inventory:<br>";
         echo implode(", ",$this->inventory);
         echo "<br><br>Which direction would you like to go?";
         $this->getDirections($conn);
@@ -110,7 +112,7 @@ public function __construct($story, $success, $fail, array $items, $currTable, $
     {
         echo $this->story, "<br><br><br>";
         echo "You've already been to ", $this->currRoom, ". There are no items left.";
-        echo "<br><br>Your inventory: <br>";
+        echo "<br><br>Your inventory:<br>";
         echo implode(", ",$this->inventory);
         echo "<br><br>Which direction would you like to go?";
         $this->getDirections($conn);
@@ -129,9 +131,9 @@ public function __construct($story, $success, $fail, array $items, $currTable, $
     public function noMove($conn)
     {
         echo $this->story, "<br><br>";
-        echo "You entered an invalid direction. Try again";
+        echo "You entered an invalid direction. Try again.";
         echo "<br><br>You are in $this->currRoom.";
-        echo "<br><br>Your inventory: <br>";
+        echo "<br><br>Your inventory:<br>";
         echo implode(", ",$this->inventory);
         echo "<br><br>Which direction would you like to go?";
         $this->getDirections($conn);
