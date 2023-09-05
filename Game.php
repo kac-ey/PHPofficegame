@@ -22,6 +22,7 @@ public function __construct($story, $success, $fail, array $items, $currTable, $
     # print direction column from table
     public function getDirections($conn)
     {
+        # prepared statement to get possible directions
         $stmt = "SELECT direction FROM " . $this->currTable;
         $stmt = $conn->prepare($stmt);
         $stmt->execute();
@@ -41,6 +42,7 @@ public function __construct($story, $success, $fail, array $items, $currTable, $
     # assign new room and new table based on user input
     public function getNextRoom($conn, $direction)
     {
+        # prepared statement to get next room/table
         $stmt = "SELECT destination, newtable FROM " . $this->currTable . " WHERE direction=?;";
         $stmt = $conn->prepare($stmt);
         $stmt->bind_param("s", $direction);
@@ -99,10 +101,11 @@ public function __construct($story, $success, $fail, array $items, $currTable, $
     # print info with inventory
     public function printStatement($conn)
     {
-        echo $this->story, "<br><br><br>";
         $this->addItem();
-        echo "You found your ", array_search($this->currRoom, $this->items), " in ", $this->currRoom, "!";
-        echo "<br><br>Your inventory:<br>";
+
+        echo $this->story, "<br><br><br>";
+        echo "You found your ", array_search($this->currRoom, $this->items), " in ", $this->currRoom, "!<br><br>";
+        echo "Your inventory:<br>";
         echo implode(", ",$this->inventory);
         echo "<br><br>Which direction would you like to go?";
         $this->getDirections($conn);
@@ -111,8 +114,8 @@ public function __construct($story, $success, $fail, array $items, $currTable, $
     public function printRepeat($conn)
     {
         echo $this->story, "<br><br><br>";
-        echo "You've already been to ", $this->currRoom, ". There are no items left.";
-        echo "<br><br>Your inventory:<br>";
+        echo "You've already been to ", $this->currRoom, ". There are no items left.<br><br>";
+        echo "Your inventory:<br>";
         echo implode(", ",$this->inventory);
         echo "<br><br>Which direction would you like to go?";
         $this->getDirections($conn);
@@ -121,21 +124,21 @@ public function __construct($story, $success, $fail, array $items, $currTable, $
     # print info with no inventory
     public function start($conn)
     {
-        echo $this->story, "<br><br>";
-        echo "<br>You are in $this->currRoom.";
-        echo "<br>Which direction would you like to go?";
+        echo $this->story, "<br><br><br>";
+        echo "You are in $this->currRoom.<br><br>";
+        echo "Which direction would you like to go?";
         $this->getDirections($conn);
     }
 
     # print info with error message
     public function noMove($conn)
     {
-        echo $this->story, "<br><br>";
-        echo "You entered an invalid direction. Try again.";
-        echo "<br><br>You are in $this->currRoom.";
-        echo "<br><br>Your inventory:<br>";
+        echo $this->story, "<br><br><br>";
+        echo "You are in $this->currRoom.<br><br>";
+        echo "Your inventory:<br>";
         echo implode(", ",$this->inventory);
         echo "<br><br>Which direction would you like to go?";
         $this->getDirections($conn);
+        echo "<h3>You entered an invalid direction. Try again.</h3>";
     }
 }

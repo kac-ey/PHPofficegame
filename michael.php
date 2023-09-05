@@ -24,11 +24,12 @@ $currRoom = 'the parking lot';
 
 $currTable = 'parkinglot';
 
+# create session variable for character
 if(empty($_SESSION['michael'])) {
     $_SESSION['michael'] = new Game($story, $success, $fail, $items, $currTable, $currRoom);
 }
 
-
+# connect to the database
 $servername = "localhost";
 $username = "root";
 $password = null;
@@ -51,25 +52,30 @@ include "design/templates/top.php";
 ?>
 <div id="main">
     <?php
+    # verify input is entered
     if(!empty($_POST["inputDirection"]))
     {
         $direction = $_POST["inputDirection"];
 
+        # check for invalid direction
         if (!$_SESSION['michael']->getNextRoom($conn, $direction))
         {
             $_SESSION['michael']->noMove($conn);
         }
+        # check if Toby found
         elseif($_SESSION['michael']->getItem() == -1)
         {
             header('Location: http://' . $_SERVER['HTTP_HOST'] . '/officeGame/michaelfail.php');
             die();
         }
+        # check if all items found
         elseif($_SESSION['michael']->getItem() == 1)
         {
             $_SESSION['michael']->addItem();
             header('Location: http://' . $_SERVER['HTTP_HOST'] . '/officeGame/michaelsuccess.php');
             die();
         }
+        # check if item already found or in parking lot
         elseif($_SESSION['michael']->getItem() == 2 || $_SESSION['michael']->currTable == 'parkinglot')
         {
             $_SESSION['michael']->printRepeat($conn);

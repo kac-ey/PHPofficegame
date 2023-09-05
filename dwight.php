@@ -20,11 +20,12 @@ $currRoom = 'the parking lot';
 
 $currTable = 'parkinglot';
 
+# create session variable for character
 if(empty($_SESSION['dwight'])) {
     $_SESSION['dwight'] = new Game($story, $success, $fail, $items, $currTable, $currRoom);
 }
 
-
+# connect to the database
 $servername = "localhost";
 $username = "root";
 $password = null;
@@ -47,25 +48,30 @@ include "design/templates/top.php";
 ?>
 <div id="main">
     <?php
+    # verify input is entered
     if(!empty($_POST["inputDirection"]))
     {
         $direction = trim(strtolower($_POST["inputDirection"]));
 
+        # check for invalid direction
         if (!$_SESSION['dwight']->getNextRoom($conn, $direction))
         {
             $_SESSION['dwight']->noMove($conn);
         }
+        # check if Toby found
         elseif($_SESSION['dwight']->getItem() == -1)
         {
             header('Location: http://' . $_SERVER['HTTP_HOST'] . '/officeGame/dwightfail.php');
             die();
         }
+        # check if all items found
         elseif($_SESSION['dwight']->getItem() == 1)
         {
             $_SESSION['dwight']->addItem();
             header('Location: http://' . $_SERVER['HTTP_HOST'] . '/officeGame/dwightsuccess.php');
             die();
         }
+        # check if item already found or in parking lot
         elseif($_SESSION['dwight']->getItem() == 2 || $_SESSION['dwight']->currTable == 'parkinglot')
         {
             $_SESSION['dwight']->printRepeat($conn);
